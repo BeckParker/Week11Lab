@@ -19,5 +19,8 @@
             <input type="submit" value="Login">
         </form>
         ${errormessage}
+        <br>
+        <p>
+            Forgot your password? Click <a href="forgot">here</a> to reset.
     </body>
 </html>

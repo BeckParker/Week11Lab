@@ -11,8 +11,6 @@ import domainmodel.*;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.mail.MessagingException;
-import javax.naming.NamingException;
 
 /**
  *
@@ -53,6 +51,62 @@ public class AccountService {
         }
         
         return null;
+    }
+    
+    public boolean forgotPassword(String email, String path) {
+        UserService us = new UserService();
+        //WebMailService wms = new WebMailService();
+        //List<User> users = null;
+        User user = null;
+        HashMap<String, String> contents = new HashMap<>();
+        boolean status = false;
+        
+        try {
+            user = us.getByEmail(email);
+        } catch (Exception ex) {
+            Logger.getLogger(AccountService.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        if (user != null) {
+            contents.put("firstname", user.getFirstname());
+            contents.put("lastname", user.getLastname());
+            contents.put("username", user.getUsername());
+            contents.put("password", user.getPassword());
+
+            String template = path + "\\emailtemplates\\resetPassword.html";
+            try {
+                WebMailService.sendMail(user.getEmail(), "NotesKeepr Reset", template, contents);
+            } catch (Exception ex) {
+            Logger.getLogger(AccountService.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            status = true;
+        }
+        
+       /* try {
+            users = us.getAll();
+        } catch (Exception ex) {
+            Logger.getLogger(AccountService.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        if (users != null) {
+            for (User temp: users) {
+                if (temp.getEmail().equals(email)) {
+                    contents.put("firstname", user.getFirstname());
+                    contents.put("lastname", user.getLastname());
+                    contents.put("username", user.getUsername());
+                    
+                    String template = path + "/emailtemplates/resetpassword.html";
+                    try {
+                        WebMailService.sendMail(user.getEmail(), "NotesKeepr Reset", template, contents);
+                    } catch (Exception ex) {
+                    Logger.getLogger(AccountService.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    status = true;
+                }
+            }
+        }*/
+        
+        return status;
     }
     
 }

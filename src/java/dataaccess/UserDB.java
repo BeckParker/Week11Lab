@@ -77,8 +77,22 @@ public class UserDB {
             User user = em.find(User.class, username);
             return user;
         } catch (Exception ex) {
-            Logger.getLogger(UserDB.class.getName()).log(Level.SEVERE, "Cannot read users", ex);
-            throw new NotesDBException("Error getting Users");
+            Logger.getLogger(UserDB.class.getName()).log(Level.SEVERE, "Cannot read user", ex);
+            throw new NotesDBException("Error getting User");
+        } finally {
+            em.close();
+        }
+    }
+    
+    public User getUserByEmail(String email) throws NotesDBException {
+        EntityManager em = DBUtil.getEmFactory().createEntityManager();
+        
+        try {
+            User user = em.createNamedQuery("User.findByEmail", User.class).setParameter("email", email).getSingleResult();
+            return user;
+        } catch (Exception ex) {
+            Logger.getLogger(UserDB.class.getName()).log(Level.SEVERE, "Cannot read user", ex);
+            throw new NotesDBException("Error getting User");
         } finally {
             em.close();
         }
